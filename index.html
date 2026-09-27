@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Triagem Musical</title><link rel="stylesheet" href="style.css">
+</head>
+<body>
+<section id="loginCard" class="card login">
+  <h1>TRIAGEM MUSICAL</h1><p>Departamento Musical</p>
+  <form id="loginForm"><label>E-mail<input id="email" type="email" required autocomplete="username"></label><label>Senha<input id="password" type="password" required autocomplete="current-password"></label><button type="submit">Entrar</button><button type="button" id="forgotPasswordBtn" class="linkBtn">Esqueci minha senha</button><div id="loginMsg" class="msg"></div></form>
+  <div id="forgotBox" class="forgotBox" hidden><h3>Recuperar senha</h3><p>Informe seu e-mail cadastrado. Você receberá um link para criar uma nova senha.</p><form id="forgotForm"><label>E-mail<input id="forgotEmail" type="email" required autocomplete="email"></label><div class="actions"><button type="submit">Enviar link</button><button type="button" id="cancelForgot" class="secondary">Cancelar</button></div></form><div id="forgotMsg" class="msg"></div></div>
+</section>
+<section id="app" hidden>
+<header class="topbar"><div><h1>TRIAGEM MUSICAL</h1><span id="who"></span></div><button id="logout" class="secondary">Sair</button></header>
+<nav id="nav" class="nav"><button data-page="dashboard">Dashboard</button><button data-page="triagem">Triagem Irmãos</button><button data-page="quantitativo">Quantitativo Geral</button><button data-page="folder">Folder</button><button data-page="admin" id="adminNav" hidden>Usuários</button><button data-page="historico" id="historyNav" hidden>Histórico</button><button data-page="conta" id="accountNav">Minha conta</button></nav>
+<main>
+<section id="page-dashboard" class="page">
+  <div class="titleRow"><div><h2>Dashboard</h2><p>Resumo dos dados da triagem.</p></div><button id="dashRefresh" class="secondary">Atualizar</button></div>
+  <div class="cards"><div class="metric"><span>Total Músicos</span><strong id="mMusicos">0</strong></div><div class="metric"><span>Total Organistas</span><strong id="mOrganistas">0</strong></div><div class="metric"><span>Total Músicos e Organistas</span><strong id="mMusOrg">0</strong></div><div class="metric"><span>Total Ministério</span><strong id="mMinisterio">0</strong></div><div class="metric"><span>Total Localidades</span><strong id="mLocalidades">0</strong></div><div class="metric"><span>Total Localidades — Irmãs e Irmãos</span><strong id="mIrmaos">0</strong></div><div class="metric highlight"><span>Total Geral</span><strong id="mGeral">0</strong></div></div>
+  <section class="card"><h3>Visão rápida</h3><div id="quick" class="quick"></div></section>
+</section>
+<section id="page-triagem" class="page" hidden>
+  <div class="titleRow"><div><h2>Triagem Irmãos</h2><p>Informe as quantidades conforme a planilha e salve as alterações.</p></div><button id="saveTriagem">Salvar alterações</button></div>
+  <div id="triagemMsg" class="msg"></div><div id="triagemGrid" class="triagemGrid"></div>
+</section>
+<section id="page-quantitativo" class="page" hidden>
+  <div class="titleRow"><div><h2>Quantitativo Geral</h2><p>Informações do ensaio e totais calculados automaticamente.</p></div><button id="saveInfo">Salvar informações</button></div>
+  <section class="card"><div class="grid"><label>Título do ensaio<input id="q_titulo"></label><label>Data/local<input id="q_data"></label><label>Ancião<input id="q_anciao"></label><label>Palavra<input id="q_palavra"></label><label>Encarregados<input id="q_encarregados"></label><label>Regência<input id="q_regencia"></label></div><div id="qMsg" class="msg"></div></section>
+  <section class="card"><h3>MINISTÉRIO</h3><div id="minTable"></div></section>
+  <section class="card"><h3>MÚSICOS E ORGANISTAS</h3><div id="musTable"></div></section>
+</section>
+<section id="page-folder" class="page" hidden>
+  <div class="titleRow"><div><h2>Folder</h2><p>Resumo no formato da planilha para conferência e impressão.</p></div><button id="printFolder">Imprimir</button></div>
+  <section class="folder card" id="folderContent"></section>
+</section>
+<section id="page-admin" class="page" hidden>
+  <div class="titleRow"><div><h2>Gerenciar usuários</h2><p>Gerencie nomes, perfis e acesso dos usuários.</p></div><button id="newUserBtn">+ Novo usuário</button></div>
+  <section id="newUserBox" class="card" hidden><h3>Novo usuário</h3><form id="newUserForm" class="grid"><label>Nome<input id="newName" required></label><label>E-mail<input id="newEmail" type="email" required></label><label>Senha<input id="newPassword" type="password" minlength="6" required></label><label>Perfil<select id="newProfile"><option value="usuario">Usuário</option><option value="administrador">Administrador</option></select></label><div class="actions"><button>Criar usuário</button><button type="button" id="cancelNew" class="secondary">Cancelar</button></div></form><div id="newMsg" class="msg"></div></section>
+  <section id="editUserBox" class="card" hidden><h3>Editar usuário</h3><form id="editUserForm" class="grid"><input type="hidden" id="editUserId"><label>Nome<input id="editUserName" required></label><label>E-mail<input id="editUserEmail" disabled></label><label>Perfil<select id="editUserProfile"><option value="usuario">Usuário</option><option value="administrador">Administrador</option></select></label><div class="actions"><button type="submit">Salvar alterações</button><button type="button" id="cancelEdit" class="secondary">Cancelar</button></div></form><div id="editMsg" class="msg"></div></section><section class="card"><div class="titleRow compact"><h3>Usuários cadastrados</h3><button id="refresh" class="secondary">Atualizar</button></div><div class="tableWrap"><table><thead><tr><th>Nome</th><th>E-mail</th><th>Perfil</th><th>Status</th><th>Ação</th></tr></thead><tbody id="usersBody"></tbody></table></div></section>
+</section>
+<section id="page-conta" class="page" hidden>
+  <div class="titleRow"><div><h2>Minha conta</h2><p>Altere sua senha de acesso ao sistema.</p></div></div>
+  <section id="recoveryCard" class="card" hidden><h3>Redefinir senha</h3><p>Você entrou pelo link de recuperação. Digite sua nova senha.</p><form id="recoveryForm" class="grid"><label>Nova senha<input id="recoveryPassword" type="password" autocomplete="new-password" minlength="6" required></label><label>Confirmar nova senha<input id="recoveryConfirm" type="password" autocomplete="new-password" minlength="6" required></label><div class="actions"><button type="submit">Salvar nova senha</button></div></form><div id="recoveryMsg" class="msg"></div></section>
+  <section class="card accountCard">
+    <h3>Alterar senha</h3>
+    <form id="changePasswordForm" class="grid">
+      <label>Senha atual<input id="currentPassword" type="password" autocomplete="current-password" minlength="6" required></label>
+      <label>Nova senha<input id="newPasswordAccount" type="password" autocomplete="new-password" minlength="6" required></label>
+      <label>Confirmar nova senha<input id="confirmPasswordAccount" type="password" autocomplete="new-password" minlength="6" required></label>
+      <div class="actions"><button type="submit">Alterar senha</button></div>
+    </form>
+    <div id="passwordMsg" class="msg"></div>
+  </section>
+</section>
+<section id="page-history" class="page" hidden style="display:none">
+  <div class="titleRow"><div><h2>Histórico de alterações</h2><p>Registro das alterações feitas pelos usuários.</p></div><button id="historyRefresh" class="secondary">Atualizar</button></div>
+  <section class="card"><div class="tableWrap"><table><thead><tr><th>Data/Hora</th><th>Usuário</th><th>Módulo</th><th>Item</th><th>Anterior</th><th>Novo</th></tr></thead><tbody id="historyBody"></tbody></table></div></section>
+</section>
+</main></section>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="config.js"></script><script src="app.js"></script>
+</body></html>

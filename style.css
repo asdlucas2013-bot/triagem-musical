@@ -1,0 +1,324 @@
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#eef3f8;color:#183653}.card{background:#fff;border-radius:16px;padding:24px;box-shadow:0 10px 30px rgba(0,0,0,.08);margin-bottom:20px}.login{width:390px;max-width:calc(100% - 30px);margin:90px auto}.login h1{text-align:center}.login>p{text-align:center;color:#66809a}.topbar{background:#183653;color:#fff;padding:16px 4%;display:flex;justify-content:space-between;align-items:center}.topbar h1{margin:0;font-size:22px}.topbar span{opacity:.85}.nav{background:#fff;padding:12px 4%;display:flex;gap:8px;flex-wrap:wrap;border-bottom:1px solid #dce4ec}.nav button{background:#e8eef4;color:#183653}.nav button.active{background:#183653;color:#fff}main{max-width:1200px;margin:28px auto;padding:0 18px}h1,h2,h3{margin-top:0}.titleRow{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:18px}.compact{margin-bottom:8px}label{font-weight:700;display:block}input,select{width:100%;padding:11px;margin-top:7px;border:1px solid #c7d4e2;border-radius:8px;font-size:15px}button{border:0;border-radius:8px;padding:11px 16px;background:#183653;color:#fff;font-weight:700;cursor:pointer}.secondary{background:#6b7d8f}.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.actions{grid-column:1/-1;display:flex;gap:10px}.msg{min-height:22px;margin-top:10px}.err{color:#c62828}.ok{color:#237a3b}.cards{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:20px}.metric{background:#fff;border-radius:14px;padding:18px;box-shadow:0 8px 24px rgba(0,0,0,.07)}.metric span{display:block;color:#6b7d8f;font-size:13px}.metric strong{display:block;font-size:30px;margin-top:8px}.metric.highlight{background:#183653;color:#fff}.metric.highlight span{color:#dbe8f5}.quick{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.quick div{padding:14px;background:#f4f7fa;border-radius:10px}.triagemGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}.sectionCard{background:#fff;border-radius:16px;padding:20px;box-shadow:0 8px 24px rgba(0,0,0,.06)}.sectionCard h3{border-bottom:1px solid #e3e9ef;padding-bottom:12px}.dataRow{display:grid;grid-template-columns:1fr 110px;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid #eef2f5}.dataRow input{margin:0;text-align:center}.tableWrap{overflow:auto}table{width:100%;border-collapse:collapse}th,td{padding:11px;border-bottom:1px solid #e4e9ef;text-align:left}th{background:#f4f7fa}.status{font-weight:700}.on{color:#237a3b}.off{color:#c62828}.small{padding:7px 10px;font-size:13px}.danger{background:#c62828}.successBtn{background:#237a3b}.summaryTable{width:100%;border-collapse:collapse}.summaryTable th,.summaryTable td{border-bottom:1px solid #e5ebf1;padding:10px;text-align:left}.folder{font-size:16px}.folderHeader{text-align:center;border-bottom:2px solid #183653;padding-bottom:12px;margin-bottom:18px}.folderCols{display:grid;grid-template-columns:1fr 1fr;gap:24px}.folderBox{border:1px solid #dce5ed;border-radius:10px;padding:14px}.totalLine{font-weight:700;background:#f3f7fa}.printOnly{display:none}@media(max-width:900px){.cards{grid-template-columns:repeat(2,1fr)}.triagemGrid,.folderCols,.quick{grid-template-columns:1fr}}@media(max-width:700px){.grid{grid-template-columns:1fr}.titleRow{align-items:flex-start;flex-direction:column}.actions{grid-column:auto;flex-direction:column}.cards{grid-template-columns:1fr}.nav{padding:10px}.nav button{flex:1 1 45%}}@media print{body{background:#fff}.topbar,.nav,.titleRow button,#page-dashboard,#page-triagem,#page-quantitativo{display:none!important}#page-folder{display:block!important}.card{box-shadow:none;border:0}.printOnly{display:block}}
+
+.sectionTitle{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #d9e2ec;margin-bottom:6px}
+.sectionTitle span{font-size:12px;color:#64748b}
+.dataRow input{max-width:120px}
+@media print{
+  .topbar,.nav,.titleRow button,.msg{display:none!important}
+  body{background:#fff!important}
+  main{max-width:none!important;padding:0!important}
+  .folder.card{box-shadow:none!important}
+}
+
+.quantCards{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:0 0 18px}.quantCard{background:#f7f9fc;border:1px solid #e3e8ef;border-radius:12px;padding:15px}.quantCard span{display:block;font-size:12px;font-weight:700;color:#52606d}.quantCard strong{display:block;font-size:28px;margin-top:6px}.quantCardTotal{background:#eef6ff;border-color:#b8d5f5}.quantHint{margin-top:12px;padding:12px;border-radius:10px;background:#fff8e6;color:#66510a;font-size:13px}@media(max-width:700px){.quantCards{grid-template-columns:1fr 1fr}}
+
+.folderDate{font-weight:700;margin:4px 0 10px}.folderSectionHeader{display:flex;justify-content:space-between;align-items:center;gap:15px;border-bottom:1px solid #dce5ed;margin-bottom:8px}.folderSectionHeader span{font-size:13px;color:#64748b}.folderLocalidades{margin-top:24px}.grandTotal td{font-size:17px}.folderFinalTotal{margin-top:18px;background:#183653;color:#fff;border-radius:10px;padding:16px 20px;display:flex;justify-content:space-between;align-items:center}.folderFinalTotal span{font-weight:700}.folderFinalTotal strong{font-size:30px}.folderNote{font-size:12px;color:#64748b;margin-top:10px}
+@media print{.folder{font-size:10px!important;padding:5px!important}.folderCols{gap:7px}.folderBox{padding:7px;border-radius:0;min-width:0}.folderLocalidades{margin-top:12px}.summaryTable th,.summaryTable td{padding:3px 4px;font-size:9px;line-height:1.05}.folderHeader{padding-bottom:8px;margin-bottom:10px}.folderFinalTotal{margin-top:10px;padding:9px 12px;border-radius:0}.folderFinalTotal strong{font-size:22px}.folderNote{font-size:9px}.folderSectionHeader span{font-size:9px}}
+
+/* Impressão da FOLDER em 3 colunas */
+@media print{
+  @page{size:A4 landscape;margin:8mm}
+  #page-folder main{max-width:none!important}
+  #page-folder .folderCols{
+    display:grid!important;
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    gap:8px!important;
+    align-items:start!important;
+  }
+  #page-folder .folderCols>.folderBox{grid-column:auto!important;}
+  #page-folder .folderLocalidades{margin-top:0!important;}
+  #page-folder .folderBox{page-break-inside:avoid;break-inside:avoid;}
+  #page-folder .folderHeader{margin-bottom:8px!important;}
+  #page-folder .summaryTable{font-size:10px!important;}
+  #page-folder .summaryTable th,#page-folder .summaryTable td{padding:3px 5px!important;}
+  #page-folder .folderFinalTotal{margin-top:8px!important;}
+}
+
+@media print{
+  @page{size:A4 landscape;margin:6mm}
+  #page-folder .folderCols{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:6px!important;width:100%!important}
+  #page-folder .folderCols>.folderBox{width:100%!important;min-width:0!important}
+  #page-folder .folderBox h3{font-size:11px!important;margin:3px 0 5px!important}
+  #page-folder .folderHeader h2{font-size:16px!important;margin:2px 0!important}
+  #page-folder .folderHeader p{font-size:9px!important;margin:3px 0!important}
+  #page-folder .folderFinalTotal{margin-top:6px!important;padding:5px 8px!important}
+  #page-folder .folderFinalTotal strong{font-size:18px!important}
+  #page-folder .folderNote{font-size:7px!important;margin:4px 0 0!important}
+}
+
+
+/* V12 - impressão final: FOLDER compacta, profissional e inteira em uma folha */
+@media print{
+  @page{size:A4 landscape;margin:4mm}
+  html,body{width:100%;height:auto!important;margin:0!important;padding:0!important;background:#fff!important}
+  body{font-family:Arial,sans-serif!important;color:#111!important}
+  #app,main,#page-folder{width:100%!important;max-width:none!important;margin:0!important;padding:0!important}
+  #page-folder{display:block!important}
+  #page-folder .folder.card{
+    display:block!important;width:100%!important;margin:0!important;padding:0!important;
+    border:0!important;box-shadow:none!important;
+  }
+  #page-folder .folderHeader{
+    display:block!important;text-align:center!important;
+    margin:0 0 5px!important;padding:0 0 4px!important;
+    border-bottom:1.2px solid #111!important;
+  }
+  #page-folder .folderHeader h2{
+    font-size:15px!important;line-height:1.05!important;margin:0 0 2px!important;
+    text-transform:uppercase!important;
+  }
+  #page-folder .folderHeader p{
+    font-size:7.5px!important;line-height:1.15!important;margin:1px 0!important;
+  }
+  #page-folder .folderHeader .folderDate{font-size:8px!important;margin:1px 0 2px!important}
+  #page-folder .folderCols{
+    display:grid!important;
+    grid-template-columns:31% 34% 35%!important;
+    gap:4px!important;
+    width:100%!important;
+    align-items:start!important;
+  }
+  #page-folder .folderBox{
+    width:100%!important;min-width:0!important;
+    padding:3px!important;margin:0!important;
+    border:1px solid #bbb!important;border-radius:2px!important;
+    box-sizing:border-box!important;
+    page-break-inside:avoid!important;break-inside:avoid!important;
+  }
+  #page-folder .folderBox h3{
+    font-size:8px!important;line-height:1!important;
+    margin:1px 0 3px!important;padding-bottom:2px!important;
+    border-bottom:1px solid #999!important;
+  }
+  #page-folder .folderLocalidades{margin-top:0!important}
+  #page-folder .folderSectionHeader{
+    margin:0 0 2px!important;border-bottom:1px solid #999!important;
+  }
+  #page-folder .folderSectionHeader h3{border:0!important;margin:1px 0 2px!important}
+  #page-folder .folderSectionHeader span{
+    font-size:6.5px!important;white-space:nowrap!important;
+  }
+  #page-folder .summaryTable{
+    width:100%!important;border-collapse:collapse!important;
+    font-size:6.7px!important;line-height:1!important;
+    margin:0!important;
+  }
+  #page-folder .summaryTable th,
+  #page-folder .summaryTable td{
+    padding:1px 2px!important;
+    border-bottom:1px solid #ddd!important;
+    height:auto!important;
+    line-height:1.05!important;
+  }
+  #page-folder .summaryTable th:last-child,
+  #page-folder .summaryTable td:last-child{
+    width:34px!important;text-align:right!important;white-space:nowrap!important;
+  }
+  #page-folder .totalLine td{
+    font-weight:700!important;background:#f1f1f1!important;
+    border-top:1px solid #888!important;
+  }
+  #page-folder .grandTotal td{font-size:7.5px!important}
+  #page-folder .folderFinalTotal{
+    margin:4px 0 0!important;padding:3px 6px!important;
+    border:1px solid #111!important;border-radius:2px!important;
+    background:#eee!important;color:#111!important;
+    page-break-inside:avoid!important;break-inside:avoid!important;
+  }
+  #page-folder .folderFinalTotal span{font-size:8px!important}
+  #page-folder .folderFinalTotal strong{font-size:13px!important}
+  #page-folder .folderNote{
+    font-size:5.8px!important;line-height:1!important;
+    margin:2px 0 0!important;color:#444!important;
+    page-break-inside:avoid!important;
+  }
+  /* garante que os controles da aplicação não ocupem espaço */
+  .topbar,.nav,.titleRow,#page-dashboard,#page-triagem,#page-quantitativo,
+  #page-folder>.titleRow,.msg{display:none!important}
+}
+
+/* V13 - correção de corte na terceira coluna da impressão */
+@media print{
+  @page{size:A4 landscape;margin:4mm}
+  #page-folder .folderCols{
+    grid-template-columns:30% 33% 37%!important;
+    gap:3px!important;
+  }
+  #page-folder .folderBox{overflow:hidden!important}
+  #page-folder .summaryTable{
+    table-layout:fixed!important;
+    width:100%!important;
+    font-size:6.2px!important;
+  }
+  #page-folder .summaryTable th:first-child,
+  #page-folder .summaryTable td:first-child{
+    width:auto!important;
+    max-width:none!important;
+    white-space:normal!important;
+    overflow-wrap:anywhere!important;
+    word-break:break-word!important;
+  }
+  #page-folder .summaryTable th:last-child,
+  #page-folder .summaryTable td:last-child{
+    width:28px!important;
+    min-width:28px!important;
+    max-width:28px!important;
+    white-space:nowrap!important;
+    text-align:right!important;
+  }
+  #page-folder .folderSectionHeader span{
+    display:block!important;
+    max-width:100%!important;
+    overflow:hidden!important;
+    text-overflow:clip!important;
+    white-space:normal!important;
+    font-size:6px!important;
+    line-height:1.05!important;
+  }
+  #page-folder .folderHeader p,
+  #page-folder .folderHeader .folderDate{white-space:normal!important}
+  #page-folder .folderFinalTotal{width:100%!important;box-sizing:border-box!important}
+}
+
+/* V14 - melhor aproveitamento da folha: letras maiores mantendo 3 colunas em uma página */
+@media print{
+  @page{size:A4 landscape;margin:5mm}
+  #page-folder .folderCols{
+    grid-template-columns:30% 34% 36%!important;
+    gap:4px!important;
+  }
+  #page-folder .folderHeader{margin-bottom:6px!important;padding-bottom:5px!important}
+  #page-folder .folderHeader h2{font-size:18px!important;line-height:1.05!important;margin-bottom:3px!important}
+  #page-folder .folderHeader p{font-size:8.5px!important;line-height:1.15!important;margin:1px 0!important}
+  #page-folder .folderHeader .folderDate{font-size:8.5px!important}
+  #page-folder .folderBox{padding:4px!important}
+  #page-folder .folderBox h3{font-size:9px!important;line-height:1.05!important;margin:1px 0 3px!important}
+  #page-folder .summaryTable{font-size:7.6px!important;line-height:1.08!important}
+  #page-folder .summaryTable th,#page-folder .summaryTable td{padding:1.6px 2px!important;line-height:1.08!important}
+  #page-folder .summaryTable th:last-child,#page-folder .summaryTable td:last-child{width:32px!important;min-width:32px!important;max-width:32px!important}
+  #page-folder .folderSectionHeader span{font-size:6.8px!important;line-height:1.1!important}
+  #page-folder .grandTotal td{font-size:8px!important}
+  #page-folder .folderFinalTotal{margin:5px 0 0!important;padding:4px 7px!important}
+  #page-folder .folderFinalTotal span{font-size:9px!important}
+  #page-folder .folderFinalTotal strong{font-size:15px!important}
+  #page-folder .folderNote{font-size:6.2px!important;margin:3px 0 0!important}
+}
+
+/* V15 - melhor aproveitamento da folha mantendo 3 colunas em uma única página */
+@media print{
+  @page{size:A4 landscape;margin:5mm}
+  html,body{width:100%!important;margin:0!important;padding:0!important}
+  #page-folder .folderCols{
+    grid-template-columns:29% 33% 38%!important;
+    gap:4px!important;
+    width:100%!important;
+    min-height:178mm!important;
+    align-items:stretch!important;
+  }
+  #page-folder .folderBox{
+    height:178mm!important;
+    min-height:178mm!important;
+    padding:5px!important;
+    overflow:hidden!important;
+  }
+  #page-folder .folderBox h3{
+    font-size:9.5px!important;
+    line-height:1.1!important;
+    margin:1px 0 4px!important;
+    padding-bottom:3px!important;
+  }
+  #page-folder .summaryTable{
+    font-size:8.2px!important;
+    line-height:1.12!important;
+  }
+  #page-folder .summaryTable th,
+  #page-folder .summaryTable td{
+    padding:2.2px 2.5px!important;
+    line-height:1.12!important;
+    vertical-align:middle!important;
+  }
+  #page-folder .summaryTable th:last-child,
+  #page-folder .summaryTable td:last-child{
+    width:34px!important;
+    min-width:34px!important;
+    max-width:34px!important;
+    white-space:nowrap!important;
+    text-align:right!important;
+  }
+  #page-folder .folderSectionHeader span{
+    font-size:7.2px!important;
+    line-height:1.1!important;
+  }
+  #page-folder .grandTotal td{font-size:8.5px!important}
+  #page-folder .folderFinalTotal{
+    margin:6px 0 0!important;
+    padding:5px 8px!important;
+  }
+  #page-folder .folderFinalTotal span{font-size:9.5px!important}
+  #page-folder .folderFinalTotal strong{font-size:16px!important}
+  #page-folder .folderNote{font-size:6.5px!important;line-height:1.1!important}
+}
+
+/* V16 - garante TOTAL GERAL na mesma página A4 */
+@media print{
+  @page{size:A4 landscape;margin:4mm}
+  #page-folder .folderCols{
+    min-height:0!important;
+    height:auto!important;
+    align-items:start!important;
+  }
+  #page-folder .folderBox{
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    overflow:visible!important;
+  }
+  #page-folder .folderFinalTotal{
+    break-inside:avoid!important;
+    page-break-inside:avoid!important;
+    margin:5px 0 0!important;
+    padding:5px 8px!important;
+  }
+  #page-folder .folderNote{
+    margin:2px 0 0!important;
+  }
+}
+
+/* V17 - logotipo da Congregação Cristã no Brasil no canto esquerdo da impressão */
+.folderHeader{position:relative;min-height:62px;}
+.folderLogo{display:block;position:absolute;left:0;top:0;width:155px;height:auto;max-height:72px;object-fit:contain;object-position:left top;margin:0;padding:0;border:0;}
+@media print{
+  #page-folder .folderHeader{position:relative!important;min-height:22px!important;}
+  #page-folder .folderLogo{
+    display:block!important;
+    position:absolute!important;
+    left:0!important;
+    top:0!important;
+    width:82px!important;
+    height:auto!important;
+    max-height:42px!important;
+    object-fit:contain!important;
+    object-position:left top!important;
+    margin:0!important;
+    padding:0!important;
+    border:0!important;
+  }
+}
+
+
+/* V18 - ações do painel administrativo */
+.userActions{white-space:nowrap}.userActions .small{margin-right:4px}.muted{font-size:12px;color:#64748b}
+#editUserBox{border:2px solid #183653}
+#editUserBox h3{margin-bottom:14px}
+.userActions{white-space:nowrap}
+
+/* Histórico: garantir renderização normal fora da impressão */
+#page-history[hidden]{display:none!important}
+#page-history:not([hidden]){display:block!important}
+
+/* V25 - Minha conta / alteração de senha */
+.accountCard{max-width:760px}
+.accountCard .actions{grid-column:1/-1}
+.accountCard .msg{margin-top:12px}
+
+.linkBtn{background:none;border:0;color:#173a5e;text-decoration:underline;cursor:pointer;margin-top:10px;font-weight:600}.forgotBox{margin-top:14px;padding:14px;border:1px solid #dbe3eb;border-radius:10px;background:#f7f9fb}.forgotBox h3{margin-top:0}.forgotBox p{margin-top:0}.accountCard{max-width:700px}
