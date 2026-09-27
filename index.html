@@ -12,7 +12,7 @@
 </section>
 <section id="app" hidden>
 <header class="topbar"><div><h1>TRIAGEM MUSICAL</h1><span id="who"></span></div><button id="logout" class="secondary">Sair</button></header>
-<nav id="nav" class="nav"><button data-page="dashboard">Dashboard</button><button data-page="triagem">Triagem Irmãos</button><button data-page="quantitativo">Quantitativo Geral</button><button data-page="folder">Folder</button><button data-page="admin" id="adminNav" hidden>Usuários</button><button data-page="historico" id="historyNav" hidden>Histórico</button><button data-page="conta" id="accountNav">Minha conta</button></nav>
+<nav id="nav" class="nav"><button data-page="dashboard">Dashboard</button><button data-page="triagem">Triagem</button><button data-page="quantitativo">Quantitativo Geral</button><button data-page="folder">Folder</button><button data-page="admin" id="adminNav" hidden>Usuários</button><button data-page="historico" id="historyNav" hidden>Histórico</button><button data-page="conta" id="accountNav">Minha conta</button></nav>
 <main>
 <section id="page-dashboard" class="page">
   <div class="titleRow"><div><h2>Dashboard</h2><p>Resumo dos dados da triagem.</p></div><button id="dashRefresh" class="secondary">Atualizar</button></div>
@@ -20,8 +20,8 @@
   <section class="card"><h3>Visão rápida</h3><div id="quick" class="quick"></div></section>
 </section>
 <section id="page-triagem" class="page" hidden>
-  <div class="titleRow"><div><h2>Triagem Irmãos</h2><p>Informe as quantidades conforme a planilha e salve as alterações.</p></div><button id="saveTriagem">Salvar alterações</button></div>
-  <div id="triagemMsg" class="msg"></div><div id="triagemGrid" class="triagemGrid"></div>
+  <div class="titleRow"><div><h2>Triagem</h2><p>Informe as quantidades conforme a planilha e salve as alterações.</p></div><button id="saveTriagem">Salvar alterações</button></div>
+  <div class="triagemSaveBar"><div id="triagemMsg" class="msg"></div><span id="autoSaveStatus" class="autoSaveStatus saved">✓ Salvo automaticamente</span></div><div id="triagemGrid" class="triagemGrid"></div>
 </section>
 <section id="page-quantitativo" class="page" hidden>
   <div class="titleRow"><div><h2>Quantitativo Geral</h2><p>Informações do ensaio e totais calculados automaticamente.</p></div><button id="saveInfo">Salvar informações</button></div>

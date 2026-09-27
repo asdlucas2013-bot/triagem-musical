@@ -60,31 +60,117 @@ function renderTriagem(){
   const root=$('triagemGrid'); root.innerHTML='';
   for(const [g,title] of GROUPS){
     const rows=state.triagem.filter(x=>x.grupo===g).sort((a,b)=>(a.ordem||0)-(b.ordem||0));
+    const isAdmin=state.profile?.perfil==='administrador';
+    const adminControls = isAdmin && (g==='localidades' || g==='musicos')
+      ? `<button type="button" class="small successBtn" id="add${g==='musicos'?'Musico':'Localidade'}Btn">+ Adicionar ${g==='musicos'?'músico':'localidade'}</button>` : '';
     root.insertAdjacentHTML('beforeend',`
       <section class="sectionCard">
-        <div class="sectionTitle"><h3>${title}</h3><span>${rows.length} itens</span></div>
+        <div class="sectionTitle"><h3>${title}</h3><div class="sectionActions"><span>${rows.length} itens</span>${adminControls}</div></div>
         ${rows.map(r=>`
-          <div class="dataRow">
+          <div class="dataRow ${g==='localidades'?'localidadeRow':''}">
             <span>${esc(r.nome)}</span>
             <input type="number" min="0" step="1" data-id="${r.id}" value="${Number(r.quantidade)||0}">
+            ${isAdmin && (g==='localidades' || g==='musicos') ? `<div class="manageBtns"><button type="button" class="small editManageBtn" data-group="${g}" data-id="${r.id}" data-name="${esc(r.nome)}">Editar</button><button type="button" class="small danger deleteManageBtn" data-group="${g}" data-id="${r.id}" data-name="${esc(r.nome)}">Excluir</button></div>` : ''}
           </div>`).join('')}
       </section>`);
   }
+  const addLocal=$('addLocalidadeBtn');
+  if(addLocal) addLocal.onclick=()=>addTriagemItem('localidades','localidade');
+  const addMus=$('addMusicoBtn');
+  if(addMus) addMus.onclick=()=>addTriagemItem('musicos','músico');
+  document.querySelectorAll('.editManageBtn').forEach(btn=>btn.onclick=()=>editTriagemItem(btn.dataset.group,btn.dataset.id,btn.dataset.name));
+  document.querySelectorAll('.deleteManageBtn').forEach(btn=>btn.onclick=()=>deleteTriagemItem(btn.dataset.group,btn.dataset.id,btn.dataset.name));
+  bindAutoSave();
+  setSaveStatus('saved');
+}
+
+async function addTriagemItem(grupo,label){
+  if(state.profile?.perfil!=='administrador') return;
+  const nome=(prompt(`Digite o nome do novo ${label}:`)||'').trim();
+  if(!nome) return;
+  const exists=state.triagem.some(x=>x.grupo===grupo && String(x.nome).trim().toLowerCase()===nome.toLowerCase());
+  if(exists){msg($('triagemMsg'),`Esse ${label} já existe.`);return;}
+  const maxOrdem=state.triagem.filter(x=>x.grupo===grupo).reduce((m,x)=>Math.max(m,Number(x.ordem)||0),0);
+  const {error}=await sb.from('triagem_irmaos').insert({grupo,nome,quantidade:0,ordem:maxOrdem+1});
+  if(error){msg($('triagemMsg'),`Não foi possível adicionar o ${label}: `+error.message);return;}
+  await logChange('Triagem',`${label} ${nome}`,'',`Adicionado`);
+  msg($('triagemMsg'),`${label[0].toUpperCase()+label.slice(1)} adicionado com sucesso!`,true);
+  await loadTriagem();
+}
+
+async function editTriagemItem(grupo,id,nome){
+  if(state.profile?.perfil!=='administrador') return;
+  const label=grupo==='musicos'?'músico':'localidade';
+  const novo=(prompt(`Editar nome do ${label}:`,nome)||'').trim();
+  if(!novo || novo===nome) return;
+  const exists=state.triagem.some(x=>x.grupo===grupo && String(x.id)!==String(id) && String(x.nome).trim().toLowerCase()===novo.toLowerCase());
+  if(exists){msg($('triagemMsg'),`Esse ${label} já existe.`);return;}
+  const {error}=await sb.from('triagem_irmaos').update({nome:novo}).eq('id',id).eq('grupo',grupo);
+  if(error){msg($('triagemMsg'),`Não foi possível editar o ${label}: `+error.message);return;}
+  await logChange('Triagem',`${label} ${nome}`,nome,novo);
+  msg($('triagemMsg'),`${label[0].toUpperCase()+label.slice(1)} atualizado com sucesso!`,true);
+  await loadTriagem();
+}
+
+async function deleteTriagemItem(grupo,id,nome){
+  if(state.profile?.perfil!=='administrador') return;
+  const label=grupo==='musicos'?'músico':'localidade';
+  if(!confirm(`Excluir o ${label} \"${nome}\"?`)) return;
+  const row=state.triagem.find(x=>String(x.id)===String(id));
+  const {error}=await sb.from('triagem_irmaos').delete().eq('id',id).eq('grupo',grupo);
+  if(error){msg($('triagemMsg'),`Não foi possível excluir o ${label}: `+error.message);return;}
+  await logChange('Triagem',`${label} ${nome}`,String(row?.quantidade||0),'Excluído');
+  msg($('triagemMsg'),`${label[0].toUpperCase()+label.slice(1)} excluído com sucesso!`,true);
+  await loadTriagem();
+}
+
+async function saveOneTriagem(input, silent=false){
+  if(!input || input.dataset.saving==='true') return;
+  const quantidade=Math.max(0,parseInt(input.value||0,10)||0);
+  input.value=quantidade;
+  const old=state.triagem.find(x=>String(x.id)===String(input.dataset.id));
+  const anterior=Number(old?.quantidade||0);
+  if(anterior===quantidade){
+    if(!silent) msg($('triagemMsg'),'✓ Tudo já está salvo.',true);
+    return;
+  }
+  input.dataset.saving='true';
+  setSaveStatus('saving');
+  const {error}=await sb.from('triagem_irmaos').update({quantidade}).eq('id',input.dataset.id);
+  input.dataset.saving='false';
+  if(error){ setSaveStatus('error'); msg($('triagemMsg'),'Erro ao salvar: '+error.message); return; }
+  old.quantidade=quantidade;
+  await logChange('Triagem', old?.nome||input.dataset.id, anterior, quantidade);
+  setSaveStatus('saved');
+  if(!silent) msg($('triagemMsg'),'✓ Salvo automaticamente.',true);
+  renderDashboard(); renderQuantitativo(); renderFolder();
+}
+
+function setSaveStatus(status){
+  const el=$('autoSaveStatus'); if(!el) return;
+  if(status==='saving'){el.textContent='⏳ Salvando...';el.className='autoSaveStatus saving';}
+  else if(status==='error'){el.textContent='⚠ Erro ao salvar';el.className='autoSaveStatus error';}
+  else {el.textContent='✓ Salvo automaticamente';el.className='autoSaveStatus saved';}
+}
+
+function bindAutoSave(){
+  document.querySelectorAll('#triagemGrid input[data-id]').forEach(input=>{
+    let timer;
+    input.addEventListener('input',()=>{
+      clearTimeout(timer);
+      setSaveStatus('saving');
+      timer=setTimeout(()=>saveOneTriagem(input,true),700);
+    });
+    input.addEventListener('change',()=>{ clearTimeout(timer); saveOneTriagem(input,true); });
+    input.addEventListener('blur',()=>{ clearTimeout(timer); saveOneTriagem(input,true); });
+  });
 }
 
 async function saveTriagem(){
   const inputs=[...document.querySelectorAll('#triagemGrid input[data-id]')];
-  msg($('triagemMsg'),'Salvando...',true);
-  for(const input of inputs){
-    const quantidade=Math.max(0,parseInt(input.value||0,10)||0);
-    const old=state.triagem.find(x=>String(x.id)===String(input.dataset.id));
-    const anterior=Number(old?.quantidade||0);
-    const {error}=await sb.from('triagem_irmaos').update({quantidade}).eq('id',input.dataset.id);
-    if(error){msg($('triagemMsg'),error.message);return;}
-    await logChange('Triagem Irmãos', old?.nome||input.dataset.id, anterior, quantidade);
-  }
-  msg($('triagemMsg'),'Alterações salvas com sucesso!',true);
-  await loadTriagem();
+  for(const input of inputs) await saveOneTriagem(input,true);
+  setSaveStatus('saved');
+  msg($('triagemMsg'),'✓ Alterações salvas.',true);
 }
 
 async function loadHistory(){
@@ -207,7 +293,7 @@ function tableRows(map){
   return map.map(([db,label])=>`<tr><td>${esc(label)}</td><td>${find(db,'ministerio')}</td></tr>`).join('');
 }
 function instrumentRows(){
-  return INSTRUMENTS_TRIAGEM.map(([db,label])=>`<tr><td>${esc(label)}</td><td>${find(db,'musicos')}</td></tr>`).join('');
+  return state.triagem.filter(x=>x.grupo==='musicos').sort((a,b)=>(a.ordem||0)-(b.ordem||0)).map(x=>`<tr><td>${esc(x.nome)}</td><td>${Number(x.quantidade)||0}</td></tr>`).join('');
 }
 
 function renderQuantitativo(){
