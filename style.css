@@ -330,3 +330,11 @@
 .editManageBtn{background:#2563eb}
 .dataRow{grid-template-columns:minmax(0,1fr) 90px auto}
 @media(max-width:700px){.dataRow{grid-template-columns:minmax(0,1fr) 80px}.manageBtns{grid-column:1/-1;justify-content:flex-end}.dataRow input{max-width:100%}}
+
+.triagemTopActions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.dateSaveCard{margin-bottom:14px}
+.dateSaveGrid{display:grid;grid-template-columns:minmax(180px,260px) 1fr;gap:14px;align-items:end}
+.dateSaveActions{display:flex;gap:8px;flex-wrap:wrap}
+.dateSaveCard small{display:block;margin-top:10px;color:#64748b}
+.dateSaveCard .msg{margin:8px 0 0}
+@media(max-width:700px){.triagemTopActions{width:100%;justify-content:stretch}.triagemTopActions button{flex:1}.dateSaveGrid{grid-template-columns:1fr}.dateSaveActions button{flex:1}}

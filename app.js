@@ -175,6 +175,88 @@ function bindAutoSave(){
   });
 }
 
+function getTriagemDate(){
+  const el=$('triagemDate');
+  if(el && el.value) return el.value;
+  return new Date().toISOString().slice(0,10);
+}
+
+function setTodayTriagemDate(){
+  const el=$('triagemDate');
+  if(el && !el.value) el.value=new Date().toISOString().slice(0,10);
+}
+
+function visibleTriagemRows(){
+  if(!isPerfilII()) return state.triagem.slice();
+  return state.triagem.filter(x =>
+    (x.grupo==='ministerio' && PERFIL_II_ITENS.includes(x.nome)) ||
+    x.grupo==='localidades'
+  );
+}
+
+async function zeroTriagem(){
+  if(!confirm('Tem certeza que deseja zerar todos os campos atuais? Os registros salvos por data não serão apagados.')) return;
+  const rows=visibleTriagemRows().filter(x=>Number(x.quantidade||0)!==0);
+  if(!rows.length){ msg($('triagemMsg'),'Todos os campos já estão zerados.',true); return; }
+  setSaveStatus('saving');
+  for(const row of rows){
+    const {error}=await sb.from('triagem_irmaos').update({quantidade:0}).eq('id',row.id);
+    if(error){ setSaveStatus('error'); msg($('triagemMsg'),'Erro ao zerar: '+error.message); return; }
+    await logChange('Triagem',row.nome,row.quantidade,0);
+    row.quantidade=0;
+  }
+  document.querySelectorAll('#triagemGrid input[data-id]').forEach(input=>input.value=0);
+  setSaveStatus('saved');
+  msg($('triagemMsg'),'✓ Todos os campos visíveis foram zerados.',true);
+  renderDashboard(); renderQuantitativo(); renderFolder();
+}
+
+async function saveTriagemByDate(){
+  const date=getTriagemDate();
+  const rows=visibleTriagemRows();
+  if(!date){msg($('dateSaveMsg'),'Informe a data.');return;}
+  msg($('dateSaveMsg'),'Salvando registro da data...',true);
+  try{
+    const {data:userData}=await sb.auth.getUser();
+    const authUser=userData?.user;
+    const profileData=state.profile;
+    const snapshot=rows.map(x=>({id:x.id,grupo:x.grupo,nome:x.nome,quantidade:Number(x.quantidade)||0,ordem:x.ordem||0}));
+    const {error}=await sb.from('triagem_por_data').upsert({
+      data_ref:date,
+      dados:snapshot,
+      usuario_id:profileData?.id||null,
+      usuario_nome:profileData?.nome||authUser?.email||''
+    },{onConflict:'data_ref'});
+    if(error) throw error;
+    msg($('dateSaveMsg'),`✓ Registro de ${new Date(date+'T12:00:00').toLocaleDateString('pt-BR')} salvo.`,true);
+  }catch(e){
+    msg($('dateSaveMsg'),'Erro ao salvar por data: '+e.message);
+  }
+}
+
+async function loadTriagemByDate(){
+  const date=getTriagemDate();
+  if(!date){msg($('dateSaveMsg'),'Informe a data.');return;}
+  msg($('dateSaveMsg'),'Carregando registro...',true);
+  const {data,error}=await sb.from('triagem_por_data').select('data_ref,dados').eq('data_ref',date).maybeSingle();
+  if(error){msg($('dateSaveMsg'),'Erro ao carregar: '+error.message);return;}
+  if(!data){msg($('dateSaveMsg'),'Não existe registro salvo para essa data.');return;}
+  const snapshot=Array.isArray(data.dados)?data.dados:[];
+  let alterados=0;
+  for(const item of snapshot){
+    const row=state.triagem.find(x=>String(x.id)===String(item.id));
+    if(!row) continue;
+    const quantidade=Math.max(0,parseInt(item.quantidade||0,10)||0);
+    if(Number(row.quantidade||0)===quantidade) continue;
+    const {error:upErr}=await sb.from('triagem_irmaos').update({quantidade}).eq('id',row.id);
+    if(upErr){msg($('dateSaveMsg'),'Erro ao aplicar o registro: '+upErr.message);return;}
+    row.quantidade=quantidade;
+    alterados++;
+  }
+  renderTriagem(); renderDashboard(); renderQuantitativo(); renderFolder();
+  msg($('dateSaveMsg'),`✓ Registro de ${new Date(date+'T12:00:00').toLocaleDateString('pt-BR')} carregado (${alterados} campos atualizados).`,true);
+}
+
 async function saveTriagem(){
   const inputs=[...document.querySelectorAll('#triagemGrid input[data-id]')];
   for(const input of inputs) await saveOneTriagem(input,true);
@@ -555,6 +637,10 @@ $('historyNav').addEventListener('click', async (e)=>{
   if(state.profile?.perfil==='administrador') await loadHistory();
 });
 $('saveTriagem').onclick=saveTriagem;
+$('zeroTriagem').onclick=zeroTriagem;
+$('saveByDate').onclick=saveTriagemByDate;
+$('loadByDate').onclick=loadTriagemByDate;
+setTodayTriagemDate();
 $('dashRefresh').onclick=async()=>{await loadTriagem();await loadInfo();};
 $('saveInfo').onclick=saveInfo;
 $('printFolder').onclick=()=>{page('folder');setTimeout(()=>window.print(),100);};

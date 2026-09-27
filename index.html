@@ -20,8 +20,28 @@
   <section class="card"><h3>Visão rápida</h3><div id="quick" class="quick"></div></section>
 </section>
 <section id="page-triagem" class="page" hidden>
-  <div class="titleRow"><div><h2>Triagem</h2><p>Informe as quantidades conforme a planilha e salve as alterações.</p></div><button id="saveTriagem">Salvar alterações</button></div>
-  <div class="triagemSaveBar"><div id="triagemMsg" class="msg"></div><span id="autoSaveStatus" class="autoSaveStatus saved">✓ Salvo automaticamente</span></div><div id="triagemGrid" class="triagemGrid"></div>
+  <div class="titleRow">
+    <div><h2>Triagem</h2><p>Informe as quantidades. As alterações continuam sendo salvas automaticamente.</p></div>
+    <div class="triagemTopActions">
+      <button id="saveTriagem">Salvar alterações</button>
+      <button id="zeroTriagem" class="danger">Zerar todos os campos</button>
+    </div>
+  </div>
+  <section class="card dateSaveCard">
+    <div class="dateSaveGrid">
+      <label>Data do registro
+        <input id="triagemDate" type="date">
+      </label>
+      <div class="dateSaveActions">
+        <button id="saveByDate">Salvar por data</button>
+        <button id="loadByDate" class="secondary">Carregar data</button>
+      </div>
+    </div>
+    <div id="dateSaveMsg" class="msg"></div>
+    <small>Você pode salvar uma fotografia dos quantitativos para cada data. Zerar os campos altera apenas os quantitativos atuais; os registros salvos por data permanecem.</small>
+  </section>
+  <div class="triagemSaveBar"><div id="triagemMsg" class="msg"></div><span id="autoSaveStatus" class="autoSaveStatus saved">✓ Salvo automaticamente</span></div>
+  <div id="triagemGrid" class="triagemGrid"></div>
 </section>
 <section id="page-quantitativo" class="page" hidden>
   <div class="titleRow"><div><h2>Quantitativo Geral</h2><p>Informações do ensaio e totais calculados automaticamente.</p></div><button id="saveInfo">Salvar informações</button></div>
