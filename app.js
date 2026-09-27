@@ -2,6 +2,9 @@ const { createClient } = supabase;
 const sb = createClient(APP_CONFIG.supabaseUrl, APP_CONFIG.supabaseAnonKey);
 const $ = id => document.getElementById(id);
 const state = { profile:null, triagem:[], info:[], users:[] };
+const PERFIL_II_ITENS = ['EXAMINADORAS','INSTRUTORAS','ORGANISTAS','ORGANISTAS DE RJM','CANDIDATAS','IRMÃS'];
+const isPerfilII = () => state.profile?.perfil === 'ii';
+const perfilLabel = p => p === 'administrador' ? 'Administrador' : p === 'ii' ? 'Perfil II' : 'Usuário';
 
 function msg(el,text,ok=false){ if(!el) return; el.textContent=text; el.className='msg '+(ok?'ok':'err'); }
 function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
@@ -33,6 +36,7 @@ async function logChange(modulo,item,anterior,novo){
 }
 
 function page(name){
+  if(isPerfilII() && !['triagem','dashboard','quantitativo','conta'].includes(name)) name='triagem';
   document.querySelectorAll('.page').forEach(x=>x.hidden=x.id!==`page-${name}`);
   document.querySelectorAll('.nav button').forEach(x=>x.classList.toggle('active',x.dataset.page===name));
   if(name==='dashboard') renderDashboard();
@@ -58,10 +62,14 @@ const GROUPS=[
 
 function renderTriagem(){
   const root=$('triagemGrid'); root.innerHTML='';
-  for(const [g,title] of GROUPS){
-    const rows=state.triagem.filter(x=>x.grupo===g).sort((a,b)=>(a.ordem||0)-(b.ordem||0));
+  const visibleGroups = isPerfilII() ? [['ministerio','MINISTÉRIO'],['localidades','LOCALIDADES']] : GROUPS;
+  for(const [g,title] of visibleGroups){
+    let rows=state.triagem.filter(x=>x.grupo===g);
+    if(isPerfilII() && g==='ministerio') rows=rows.filter(x=>PERFIL_II_ITENS.includes(x.nome));
+    rows=rows.sort((a,b)=>(a.ordem||0)-(b.ordem||0));
     const isAdmin=state.profile?.perfil==='administrador';
-    const adminControls = isAdmin && (g==='localidades' || g==='musicos')
+    const canAddLocalidade = isAdmin || (isPerfilII() && g==='localidades');
+    const adminControls = ((isAdmin && (g==='localidades' || g==='musicos')) || (isPerfilII() && g==='localidades'))
       ? `<button type="button" class="small successBtn" id="add${g==='musicos'?'Musico':'Localidade'}Btn">+ Adicionar ${g==='musicos'?'músico':'localidade'}</button>` : '';
     root.insertAdjacentHTML('beforeend',`
       <section class="sectionCard">
@@ -85,7 +93,8 @@ function renderTriagem(){
 }
 
 async function addTriagemItem(grupo,label){
-  if(state.profile?.perfil!=='administrador') return;
+  const canAdd = state.profile?.perfil==='administrador' || (state.profile?.perfil==='ii' && grupo==='localidades');
+  if(!canAdd) return;
   const nome=(prompt(`Digite o nome do novo ${label}:`)||'').trim();
   if(!nome) return;
   const exists=state.triagem.some(x=>x.grupo===grupo && String(x.nome).trim().toLowerCase()===nome.toLowerCase());
@@ -419,7 +428,7 @@ async function loadUsers(){
   if(error){$('usersBody').innerHTML=`<tr><td colspan="5">${esc(error.message)}</td></tr>`;return;}
   state.users=data||[];
   $('usersBody').innerHTML=(data||[]).map(u=>`<tr>
-    <td>${esc(u.nome)}</td><td>${esc(u.usuario)}</td><td>${esc(u.perfil)}</td>
+    <td>${esc(u.nome)}</td><td>${esc(u.usuario)}</td><td>${esc(perfilLabel(u.perfil))}</td>
     <td><span class="status ${u.ativo?'on':'off'}">${u.ativo?'Ativo':'Bloqueado'}</span></td>
     <td class="userActions">
       <button type="button" class="small secondary edit-user-btn" data-id="${esc(u.id)}">Editar</button>
@@ -465,9 +474,12 @@ async function enter(user){
   state.user=user;
   state.profile=await profile(user);
   $('loginCard').hidden=true; $('app').hidden=false;
-  $('who').textContent=`${state.profile.nome} • ${state.profile.perfil}`;
-  $('adminNav').hidden=state.profile.perfil!=='administrador'; $('historyNav').hidden=state.profile.perfil!=='administrador';
-  page('dashboard');
+  $('who').textContent=`${state.profile.nome} • ${perfilLabel(state.profile.perfil)}`;
+  $('adminNav').hidden=state.profile.perfil!=='administrador';
+  $('historyNav').hidden=state.profile.perfil!=='administrador';
+  document.querySelectorAll('.nav button[data-page="folder"]').forEach(b=>b.hidden=isPerfilII());
+  document.querySelectorAll('.nav button[data-page="dashboard"], .nav button[data-page="quantitativo"]').forEach(b=>b.hidden=false);
+  page(isPerfilII() ? 'triagem' : 'dashboard');
   await loadTriagem(); await loadInfo();
   if(state.profile.perfil==='administrador') await loadUsers();
 }
