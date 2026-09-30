@@ -284,11 +284,10 @@ function totalIrmasIrmaosLocalidades(){return state.triagem.filter(x=>x.grupo===
 function totalGeralQuantitativo(){
   const musicos=sumGroup('musicos');
   const org=organistas();
-  const musOrg=musicos+org;
-  const ministerio=totalMinisterioPrincipal();
-  const localidades=totalLocalidades();
+  // O Total Geral permanece somando apenas o Ministério considerado no cálculo atual.
+  const ministerio=totalMinisterioGeral();
   const irmaos=totalIrmasIrmaosLocalidades();
-  return musicos+org+musOrg+ministerio+localidades+irmaos;
+  return musicos+org+ministerio+irmaos;
 }
 
 const MINISTRY_PRIMARY=[
@@ -310,14 +309,20 @@ const INSTRUMENTS_TRIAGEM=[
   ['TUBAS','TUBA'],['HARMÔNICAS','ACORDEON']
 ];
 
+function totalMinisterioGeral(){
+  // Base usada exclusivamente no TOTAL GERAL: não inclui encarregados nem examinadoras.
+  const incluir=['ANCIÕES','DIÁCONOS','COOPERADORES','COOP. JOVENS E MENORES'];
+  return incluir.reduce((s,db)=>s+find(db,'ministerio'),0);
+}
+
 function totalMinisterioPrincipal(){
-  return MINISTRY_PRIMARY.reduce((s,[db])=>s+find(db,'ministerio'),0);
+  // TOTAL MINISTÉRIO: soma somente as 7 categorias definidas pelo usuário.
+  const incluir=['ANCIÕES','DIÁCONOS','COOPERADORES','COOP. JOVENS E MENORES','ENC. REGIONAIS','ENC. LOCAIS','EXAMINADORAS'];
+  return incluir.reduce((s,nome)=>s+find(nome,'ministerio'),0);
 }
 function totalGeralPlanilha(){
-  return totalMinisterioPrincipal()+sumGroup('musicos')+organistas()
-    +find('INSTRUTORES','ministerio')+find('INSTRUTORAS','ministerio')
-    +find('CANDIDATOS','ministerio')+find('CANDIDATAS','ministerio')
-    +find('IRMÃOS','ministerio')+find('IRMÃS','ministerio');
+  // TOTAL GERAL: não inclui Encarregados Regionais, Encarregados Locais nem Examinadoras.
+  return totalMinisterioGeral()+sumGroup('musicos')+organistas()+totalIrmasIrmaosLocalidades();
 }
 
 function renderDashboard(){
@@ -327,7 +332,7 @@ function renderDashboard(){
   const ministerio=totalMinisterioPrincipal();
   const localidades=totalLocalidades();
   const irmaos=totalIrmasIrmaosLocalidades();
-  const total=musicos+org+musOrg+ministerio+localidades+irmaos;
+  const total=totalGeralQuantitativo();
   $('mMinisterio').textContent=ministerio;
   $('mMusicos').textContent=musicos;
   $('mOrganistas').textContent=org;
@@ -426,7 +431,7 @@ function renderQuantitativo(){
         <tr class="totalLine"><td>TOTAL GERAL</td><td>${total}</td></tr>
       </tbody>
     </table>
-    <div class="quantHint">Total de Localidades conta apenas as localidades com quantidade maior que zero. O total de Irmãs e Irmãos soma os valores dessas localidades. O Total Geral soma os seis totais anteriores.</div>`;
+    <div class="quantHint">Total de Localidades conta apenas as localidades com quantidade maior que zero. O total de Irmãs e Irmãos soma os valores dessas localidades. O Total Geral soma somente Músicos + Organistas + Ministério + Irmãos e Irmãs.</div>`;
 }
 
 function renderFolder(){
@@ -503,7 +508,7 @@ function renderFolder(){
     <div class="folderFinalTotal">
       <span>TOTAL GERAL</span><strong>${total}</strong>
     </div>
-    <p class="folderNote">O total de localidades considera somente localidades com quantidade maior que zero. O Total Geral soma os seis totais apresentados acima.</p>`;
+    <p class="folderNote">O total de localidades considera somente localidades com quantidade maior que zero. O Total Geral soma somente Músicos + Organistas + Ministério + Irmãos e Irmãs.</p>`;
 }
 async function loadUsers(){
   const {data,error}=await sb.from('usuarios').select('id,nome,usuario,perfil,ativo,auth_user_id').order('nome');
