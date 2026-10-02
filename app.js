@@ -354,7 +354,7 @@ function renderDashboard(){
     <div><b>Total Músicos e Organistas</b><br>${musOrg}</div>
     <div><b>Total Ministério</b><br>${ministerio}</div>
     <div><b>Total Localidades</b><br>${localidades}</div>
-    <div><b>Total Localidades — Irmãs e Irmãos</b><br>${irmaos}</div>
+    <div><b>Irmãs e Irmãos</b><br>${irmaos}</div>
     <div><b>Total Geral</b><br>${total}</div>`;
 }
 
@@ -656,6 +656,16 @@ setTodayTriagemDate();
 $('dashRefresh').onclick=async()=>{await loadTriagem();await loadInfo();};
 $('saveInfo').onclick=saveInfo;
 $('printFolder').onclick=()=>{page('folder');setTimeout(()=>window.print(),100);};
+$('printFolder2').onclick=()=>{
+  page('folder');
+  const style=document.createElement('style');
+  style.id='printFolder2Style';
+  style.textContent='@media print{ @page{size:A4 portrait;margin:6mm} #page-folder .folderCols{grid-template-columns:1fr!important;gap:8px!important} #page-folder .folderBox{page-break-inside:avoid;break-inside:avoid} #page-folder .folderLocalidades{margin-top:8px!important} #page-folder .folderHeader{min-height:46px!important} #page-folder .folderLogo{width:95px!important;max-height:48px!important} #page-folder .folderHeader h2{font-size:17px!important} #page-folder .summaryTable{font-size:9px!important} #page-folder .summaryTable th,#page-folder .summaryTable td{padding:3px 4px!important} #page-folder .folderFinalTotal{font-size:11px!important} #page-folder .folderFinalTotal strong{font-size:20px!important} #page-folder .folderNote{font-size:8px!important} }';
+  document.head.appendChild(style);
+  const cleanup=()=>{style.remove();window.removeEventListener('afterprint',cleanup);};
+  window.addEventListener('afterprint',cleanup);
+  setTimeout(()=>window.print(),150);
+};
 $('refresh').onclick=loadUsers; $('historyRefresh').onclick=loadHistory;
 $('cancelEdit').onclick=()=>{ $('editUserBox').hidden=true; $('editUserForm').reset(); msg($('editMsg'),''); };
 $('usersBody').addEventListener('click',e=>{
