@@ -416,7 +416,7 @@ function renderQuantitativo(){
       <div class="quantCard"><span>TOTAL MÚSICOS E ORGANISTAS</span><strong>${musOrg}</strong></div>
       <div class="quantCard"><span>TOTAL DE MINISTÉRIO</span><strong>${ministerio}</strong></div>
       <div class="quantCard"><span>TOTAL DE LOCALIDADES</span><strong>${localidades}</strong></div>
-      <div class="quantCard"><span>TOTAL DE LOCALIDADES — IRMÃS E IRMÃOS</span><strong>${irmaos}</strong></div>
+      <div class="quantCard"><span>TOTAL DE IRMÃS E IRMÃOS</span><strong>${irmaos}</strong></div>
       <div class="quantCard quantCardTotal"><span>TOTAL GERAL</span><strong>${total}</strong></div>
     </div>
     <table class="summaryTable">
@@ -427,7 +427,7 @@ function renderQuantitativo(){
         <tr><td>TOTAL MÚSICOS E ORGANISTAS</td><td>${musOrg}</td></tr>
         <tr><td>TOTAL DE MINISTÉRIO</td><td>${ministerio}</td></tr>
         <tr><td>TOTAL DE LOCALIDADES</td><td>${localidades}</td></tr>
-        <tr><td>TOTAL DE LOCALIDADES — IRMÃS E IRMÃOS</td><td>${irmaos}</td></tr>
+        <tr><td>TOTAL DE IRMÃS E IRMÃOS</td><td>${irmaos}</td></tr>
         <tr class="totalLine"><td>TOTAL GERAL</td><td>${total}</td></tr>
       </tbody>
     </table>
@@ -471,7 +471,7 @@ function renderFolder(){
           <tr><td>TOTAL MÚSICOS E ORGANISTAS</td><td>${musOrg}</td></tr>
           <tr><td>TOTAL DE MINISTÉRIO</td><td>${ministerio}</td></tr>
           <tr><td>TOTAL DE LOCALIDADES</td><td>${localidades}</td></tr>
-          <tr><td>TOTAL DE LOCALIDADES — IRMÃS E IRMÃOS</td><td>${irmaos}</td></tr>
+          <tr><td>TOTAL DE IRMÃS E IRMÃOS</td><td>${irmaos}</td></tr>
           <tr class="totalLine grandTotal"><td>TOTAL GERAL</td><td>${total}</td></tr>
         </table>
       </div>
@@ -499,7 +499,7 @@ function renderFolder(){
           </tbody>
           <tfoot>
             <tr class="totalLine"><td>TOTAL DE LOCALIDADES</td><td>${localidades}</td></tr>
-            <tr class="totalLine"><td>TOTAL DE LOCALIDADES — IRMÃS E IRMÃOS</td><td>${irmaos}</td></tr>
+            <tr class="totalLine"><td>TOTAL DE IRMÃS E IRMÃOS</td><td>${irmaos}</td></tr>
           </tfoot>
         </table>
       </div>
